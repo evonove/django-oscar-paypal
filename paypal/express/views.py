@@ -7,6 +7,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -31,6 +32,7 @@ from paypal.exceptions import PayPalError
 PaymentDetailsView = get_class('checkout.views', 'PaymentDetailsView')
 CheckoutSessionMixin = get_class('checkout.session', 'CheckoutSessionMixin')
 
+User = get_user_model()
 ShippingAddress = get_model('order', 'ShippingAddress')
 Country = get_model('address', 'Country')
 Basket = get_model('basket', 'Basket')
@@ -231,8 +233,17 @@ class SuccessResponseView(PaymentDetailsView):
         if Selector:
             basket.strategy = Selector().strategy(self.request)
 
+        # Find the logged user (if any)
+        try:
+            if self.request and self.request.user:
+                user = User.objects.get(id=self.request.user.id)
+            else:
+                user = None
+        except User.DoesNotExist:
+            user = None
+
         # Re-apply any offers
-        Applicator().apply(request=self.request, basket=basket)
+        Applicator().apply(request=self.request, basket=basket, user=user)
 
         return basket
 
