@@ -61,6 +61,9 @@ class RedirectView(CheckoutSessionMixin, RedirectView):
     # basket page but True when redirecting from checkout.
     as_payment_method = False
 
+    # If True redirect directly to credit card payment
+    ccard = False
+
     def get_redirect_url(self, **kwargs):
         try:
             basket = self.build_submission()['basket']
@@ -140,6 +143,7 @@ class RedirectView(CheckoutSessionMixin, RedirectView):
             params['user'] = user
 
         params['paypal_params'] = self._get_paypal_params()
+        params['ccard'] = self.ccard
 
         return get_paypal_url(**params)
 

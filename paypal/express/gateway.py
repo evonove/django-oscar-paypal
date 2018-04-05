@@ -115,7 +115,7 @@ def _fetch_response(method, extra_params):
 
 def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_url=None,
             action=SALE, user=None, user_address=None, shipping_method=None,
-            shipping_address=None, no_shipping=False, paypal_params=None):
+            shipping_address=None, no_shipping=False, paypal_params=None, ccard=False):
     """
     Register the transaction with PayPal to get a token which we use in the
     redirect URL.  This is the 'SetExpressCheckout' from their documentation.
@@ -347,11 +347,18 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
 
     # Construct return URL
     if getattr(settings, 'PAYPAL_SANDBOX_MODE', True):
-        url = 'https://www.sandbox.paypal.com/webscr'
+        url = 'https://www.sandbox.paypal.com/'
     else:
-        url = 'https://www.paypal.com/webscr'
-    params = (('cmd', '_express-checkout'),
-              ('token', txn.token),)
+        url = 'https://www.paypal.com/'
+
+    if not ccard:
+        url += 'webscr'
+        params = (('cmd', '_express-checkout'),
+                  ('token', txn.token),)
+    else:
+        url += 'webapps/xoonboarding'
+        params = (('token', txn.token),)
+
     return '%s?%s' % (url, urlencode(params))
 
 

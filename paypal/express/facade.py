@@ -24,7 +24,7 @@ def _get_payment_action():
 
 def get_paypal_url(basket, shipping_methods, user=None, shipping_address=None,
                    shipping_method=None, host=None, scheme=None,
-                   paypal_params=None):
+                   paypal_params=None, ccard=False):
     """
     Return the URL for a PayPal Express transaction.
 
@@ -83,7 +83,8 @@ def get_paypal_url(basket, shipping_methods, user=None, shipping_address=None,
                    user=user,
                    user_address=address,
                    no_shipping=no_shipping,
-                   paypal_params=paypal_params)
+                   paypal_params=paypal_params,
+                   ccard=ccard)
 
 
 def fetch_transaction_details(token):
