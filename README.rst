@@ -3,7 +3,7 @@ PayPal package for django-oscar
 ===============================
 
 This package provides integration between django-oscar_ and both `PayPal
-Express`_ and `PayPal Payflow Pro`_. 
+Express`_ and `PayPal Payflow Pro`_.
 
 .. _django-oscar: https://github.com/django-oscar/django-oscar
 .. _`PayPal Express`: https://www.paypal.com/uk/cgi-bin/webscr?cmd=_additional-payment-ref-impl1
@@ -14,7 +14,7 @@ package is structured so that it can be used without Oscar if you so wish.
 
 * `Full documentation`_
 
-.. _`Full documentation`: http://django-oscar-paypal.readthedocs.org/en/latest/
+.. _`Full documentation`: https://django-oscar-paypal.readthedocs.io/en/latest/
 .. _`Continuous integration status`: http://travis-ci.org/#!/django-oscar/django-oscar-paypal?branch=master
 
 License
@@ -40,7 +40,7 @@ Having problems or got a question?
 * Use Github_ for submitting issues and pull requests.
 
 .. _`@django_oscar`: https://twitter.com/django_oscar
-.. _`contributing guide`: http://django-oscar-paypal.readthedocs.org/en/latest/contributing.html
+.. _`contributing guide`: https://django-oscar-paypal.readthedocs.io/en/latest/contributing.html
 .. _`django-oscar@googlegroups.com`: https://groups.google.com/forum/?fromgroups#!forum/django-oscar
 .. _`Github`: http://github.com/django-oscar/django-oscar-paypal
 
@@ -51,12 +51,17 @@ Tests
     :alt: Continuous integration status
     :target: http://travis-ci.org/#!/django-oscar/django-oscar-paypal
 
-.. image:: https://coveralls.io/repos/django-oscar/django-oscar-paypal/badge.png?branch=master
+.. image:: http://codecov.io/github/django-oscar/django-oscar-paypal/coverage.svg?branch=master
     :alt: Coverage
-    :target: https://coveralls.io/r/django-oscar/django-oscar-paypal
+    :target: http://codecov.io/github/django-oscar/django-oscar-paypal?branch=master
 
 Changelog
 ---------
+
+1.0.0 (released May 30th, 2018)
+-----------------------------------
+* Add support for Oscar 1.6 and Django 2.
+* Drop support for Oscar 1.4 and lower and Django 1.10 and lower.
 
 0.9.7 (released January 12th, 2016)
 -----------------------------------
@@ -97,7 +102,7 @@ Changelog
 ~~~~~
 
 * Use the correct key to look up a previous transaction ID (for
-  refund/capture/void operations). `#81`_ 
+  refund/capture/void operations). `#81`_
 
 .. _`#81`: https://github.com/django-oscar/django-oscar-paypal/pull/81
 
@@ -140,7 +145,7 @@ Changelog
 0.6.1
 ~~~~~
 * Persist shipping method name when using PayPal Express as a payment method
-  only. 
+  only.
 
 0.6
 ~~~
