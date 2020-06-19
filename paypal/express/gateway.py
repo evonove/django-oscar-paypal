@@ -287,7 +287,7 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
         params['PAYMENTREQUEST_0_SHIPTOSTATE'] = shipping_address.state
         params['PAYMENTREQUEST_0_SHIPTOZIP'] = shipping_address.postcode
         params['PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE'] = shipping_address.country.iso_3166_1_a2
-        params['PAYMENTREQUESST_0_SHIPTOPHONENUM'] = shipping_address.phone_number
+        params['PAYMENTREQUEST_0_SHIPTOPHONENUM'] = shipping_address.phone_number
 
         # For US addresses, we need to try and convert the state into 2 letter
         # code - otherwise we can get a 10736 error as the shipping address and
