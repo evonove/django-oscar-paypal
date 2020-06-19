@@ -1,6 +1,7 @@
 *.sw[po]
 *.py[oc]
 .DS_Store
+.cache/
 
 # Packaging
 dist
@@ -12,7 +13,7 @@ docs/_build
 htmlcov
 .tox
 .coverage
-.coveralls.yml
+.pytest_cache
 
 # Database
 sandbox/db.sqlite
