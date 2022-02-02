@@ -12,23 +12,19 @@ setup(
         "Payments for django-oscar"),
     long_description=open('README.rst').read(),
     keywords="Payment, PayPal, Oscar",
-    license=open('LICENSE').read(),
+    license='BSD',
     platforms=['linux'],
     packages=find_packages(exclude=['sandbox*', 'tests*']),
     include_package_data=True,
     install_requires=[
-        'django>=1.11,<2.1',
-        'requests>=1.0',
+        'django>=2.2,<3.3',
+        'paypal-checkout-serversdk>=1.0.1',
+        'requests>=2.26.0',
         'django-localflavor'
     ],
     extras_require={
-        'oscar': ['django-oscar>=1.5,<1.7']
+        'oscar': ['django-oscar>=2.0,<4.0']
     },
-    tests_require=[
-        'django-webtest==1.9.2',
-        'pytest-cov==2.5.1',
-        'pytest-django==3.1.2',
-    ],
     # See http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -38,11 +34,10 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: Unix',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Other/Nonlisted Topic'],
 )

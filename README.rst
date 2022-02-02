@@ -2,11 +2,12 @@
 PayPal package for django-oscar
 ===============================
 
-This package provides integration between django-oscar_ and both `PayPal
-Express`_ and `PayPal Payflow Pro`_.
+This package provides integration between django-oscar_ and both `PayPal REST API`_, `PayPal
+Express (NVP)`_ and `PayPal Payflow Pro`_.
 
 .. _django-oscar: https://github.com/django-oscar/django-oscar
-.. _`PayPal Express`: https://www.paypal.com/uk/cgi-bin/webscr?cmd=_additional-payment-ref-impl1
+.. _`PayPal REST API`: https://developer.paypal.com/docs/api-basics/
+.. _`PayPal Express (NVP)`: https://developer.paypal.com/docs/nvp-soap-api/
 .. _`PayPal Payflow Pro`: https://merchant.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=merchant/payment_gateway
 
 These payment options can be used individually or together.  Further, the
@@ -47,9 +48,7 @@ Having problems or got a question?
 Tests
 -----
 
-.. image:: https://secure.travis-ci.org/django-oscar/django-oscar-paypal.png
-    :alt: Continuous integration status
-    :target: http://travis-ci.org/#!/django-oscar/django-oscar-paypal
+.. image:: https://github.com/django-oscar/django-oscar-paypal/workflows/Tests/badge.svg
 
 .. image:: http://codecov.io/github/django-oscar/django-oscar-paypal/coverage.svg?branch=master
     :alt: Coverage
@@ -57,6 +56,12 @@ Tests
 
 Changelog
 ---------
+
+2.0.0 (released December 20th, 2019)
+------------------------------------
+* Add support for Oscar 2.0 and Django 2.2.
+* Drop support for Oscar 1.6 and lower and Django 2.0 and lower.
+* Drop support for Python 2.
 
 1.0.0 (released May 30th, 2018)
 -----------------------------------

@@ -1,5 +1,7 @@
 import os
 
+from django.utils.translation import gettext_lazy as _
+
 # Django settings for oscar project.
 PROJECT_DIR = os.path.dirname(__file__)
 location = lambda x: os.path.join(os.path.dirname(os.path.realpath(__file__)), x)
@@ -19,8 +21,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': location('db.sqlite'),                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',     # Add 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': location('db.sqlite'),              # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -86,7 +88,7 @@ MEDIA_URL = '/media/'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-#ADMIN_MEDIA_PREFIX = '/media/admin/'
+# ADMIN_MEDIA_PREFIX = '/media/admin/'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = location('public')
@@ -110,15 +112,11 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 ROOT_URLCONF = 'urls'
 
-from oscar import OSCAR_MAIN_TEMPLATE_DIR
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             location('templates'),
-            os.path.join(OSCAR_MAIN_TEMPLATE_DIR, 'templates'),
-            OSCAR_MAIN_TEMPLATE_DIR,
         ],
         'OPTIONS': {
             'loaders': [
@@ -135,8 +133,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 'oscar.apps.search.context_processors.search_form',
-                'oscar.apps.promotions.context_processors.promotions',
                 'oscar.apps.checkout.context_processors.checkout',
+                'oscar.apps.communication.notifications.context_processors.notifications',
                 'oscar.core.context_processors.metadata',
             ],
         }
@@ -221,15 +219,52 @@ INSTALLED_APPS = [
     # External apps
     'django_extensions',
     'debug_toolbar',
+
+    # sandbox
+    'apps.shipping.apps.ShippingConfig',
+    'apps.checkout.apps.CheckoutConfig',
+    'paypal.express.dashboard.apps.ExpressDashboardApplication',
+    'paypal.express_checkout.dashboard.apps.ExpressCheckoutDashboardApplication',
+    'paypal.payflow.dashboard.apps.PayFlowDashboardApplication',
+
+    # oscar
+    'oscar.config.Shop',
+    'oscar.apps.analytics.apps.AnalyticsConfig',
+    'oscar.apps.address.apps.AddressConfig',
+    'oscar.apps.catalogue.apps.CatalogueConfig',
+    'oscar.apps.catalogue.reviews.apps.CatalogueReviewsConfig',
+    'oscar.apps.communication.apps.CommunicationConfig',
+    'oscar.apps.partner.apps.PartnerConfig',
+    'oscar.apps.basket.apps.BasketConfig',
+    'oscar.apps.payment.apps.PaymentConfig',
+    'oscar.apps.offer.apps.OfferConfig',
+    'oscar.apps.order.apps.OrderConfig',
+    'oscar.apps.customer.apps.CustomerConfig',
+    'oscar.apps.search.apps.SearchConfig',
+    'oscar.apps.voucher.apps.VoucherConfig',
+    'oscar.apps.wishlists.apps.WishlistsConfig',
+    'oscar.apps.dashboard.apps.DashboardConfig',
+    'oscar.apps.dashboard.reports.apps.ReportsDashboardConfig',
+    'oscar.apps.dashboard.users.apps.UsersDashboardConfig',
+    'oscar.apps.dashboard.orders.apps.OrdersDashboardConfig',
+    'oscar.apps.dashboard.catalogue.apps.CatalogueDashboardConfig',
+    'oscar.apps.dashboard.offers.apps.OffersDashboardConfig',
+    'oscar.apps.dashboard.partners.apps.PartnersDashboardConfig',
+    'oscar.apps.dashboard.pages.apps.PagesDashboardConfig',
+    'oscar.apps.dashboard.ranges.apps.RangesDashboardConfig',
+    'oscar.apps.dashboard.reviews.apps.ReviewsDashboardConfig',
+    'oscar.apps.dashboard.vouchers.apps.VouchersDashboardConfig',
+    'oscar.apps.dashboard.communications.apps.CommunicationsDashboardConfig',
+    'oscar.apps.dashboard.shipping.apps.ShippingDashboardConfig',
+
     # Apps from oscar
     'paypal',
     'widget_tweaks',
+    'haystack',
+    'treebeard',
+    'sorl.thumbnail',
+    'django_tables2',
 ]
-
-from oscar import get_core_apps
-INSTALLED_APPS = INSTALLED_APPS + get_core_apps([
-    'apps.shipping',
-    'apps.checkout'])
 
 AUTHENTICATION_BACKENDS = (
     'oscar.apps.customer.auth_backends.EmailBackend',
@@ -240,13 +275,12 @@ LOGIN_REDIRECT_URL = '/accounts/'
 APPEND_SLASH = True
 
 # Oscar settings
-from oscar.defaults import *
+from oscar.defaults import *    # noqa
 OSCAR_ALLOW_ANON_CHECKOUT = True
 
 OSCAR_SHOP_TAGLINE = 'PayPal'
 
 # Add Payflow dashboard stuff to settings
-from django.utils.translation import ugettext_lazy as _
 OSCAR_DASHBOARD_NAVIGATION.append(
     {
         'label': _('PayPal'),
@@ -254,11 +288,15 @@ OSCAR_DASHBOARD_NAVIGATION.append(
         'children': [
             {
                 'label': _('PayFlow transactions'),
-                'url_name': 'paypal-payflow-list',
+                'url_name': 'payflow_dashboard:paypal-payflow-list',
             },
             {
                 'label': _('Express transactions'),
-                'url_name': 'paypal-express-list',
+                'url_name': 'express_dashboard:paypal-express-list',
+            },
+            {
+                'label': _('Express Checkout transactions'),
+                'url_name': 'express_checkout_dashboard:paypal-transaction-list',
             },
         ]
     })
@@ -285,6 +323,10 @@ PAYPAL_API_SIGNATURE = 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU
 # Standard currency is GBP
 PAYPAL_CURRENCY = PAYPAL_PAYFLOW_CURRENCY = 'GBP'
 PAYPAL_PAYFLOW_DASHBOARD_FORMS = True
+
+# PayPal REST API credentials
+PAYPAL_CLIENT_ID = ''
+PAYPAL_CLIENT_SECRET = ''
 
 # Put your own sandbox settings into an integration.py modulde (that is ignored
 # by git).

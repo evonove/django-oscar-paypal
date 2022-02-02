@@ -1,14 +1,11 @@
-from __future__ import unicode_literals
-
 import logging
 from decimal import Decimal as D
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.template.defaultfilters import striptags, truncatewords
-from django.utils import six
 from django.utils.http import urlencode
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from localflavor.us import us_states
 
 from paypal import exceptions, gateway
@@ -31,6 +28,8 @@ SALE, AUTHORIZATION, ORDER = 'Sale', 'Authorization', 'Order'
 API_VERSION = getattr(settings, 'PAYPAL_API_VERSION', '119')
 
 logger = logging.getLogger('paypal.express')
+
+buyer_pays_on_paypal = lambda: getattr(settings, 'PAYPAL_BUYER_PAYS_ON_PAYPAL', False)
 
 
 def _format_description(description):
@@ -114,7 +113,7 @@ def _fetch_response(method, extra_params):
     return txn
 
 
-def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_url=None,
+def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_url=None,  # noqa: C901 too complex
             action=SALE, user=None, user_address=None, shipping_method=None,
             shipping_address=None, no_shipping=False, paypal_params=None, ccard=False):
     """
@@ -202,6 +201,8 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
         params['L_PAYMENTREQUEST_0_AMT%d' % index] = _format_currency(
             line.unit_price_incl_tax)
         params['L_PAYMENTREQUEST_0_QTY%d' % index] = line.quantity
+        params['L_PAYMENTREQUEST_0_ITEMCATEGORY%d' % index] = (
+            'Physical' if product.is_shipping_required else 'Digital')
 
     # If the order has discounts associated with it, the way PayPal suggests
     # using the API is to add a separate item for the discount with the value
@@ -314,7 +315,7 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
             if is_default:
                 params['PAYMENTREQUEST_0_SHIPPINGAMT'] = _format_currency(charge)
                 params['PAYMENTREQUEST_0_AMT'] += charge
-            params['L_SHIPPINGOPTIONNAME%d' % index] = six.text_type(method.name)
+            params['L_SHIPPINGOPTIONNAME%d' % index] = str(method.name)
             params['L_SHIPPINGOPTIONAMOUNT%d' % index] = _format_currency(charge)
 
     # Set shipping charge explicitly if it has been passed
@@ -352,11 +353,16 @@ def set_txn(basket, shipping_methods, currency, return_url, cancel_url, update_u
 
     if not ccard:
         url += 'webscr'
-        params = (('cmd', '_express-checkout'),
-                  ('token', txn.token),)
+        params = [
+            ('cmd', '_express-checkout'),
+            ('token', txn.token),
+        ]
     else:
         url += 'webapps/xoonboarding'
-        params = (('token', txn.token),)
+        params = [('token', txn.token)]
+
+    if buyer_pays_on_paypal():
+        params.append(('useraction', 'commit'))
 
     return '%s?%s' % (url, urlencode(params))
 
